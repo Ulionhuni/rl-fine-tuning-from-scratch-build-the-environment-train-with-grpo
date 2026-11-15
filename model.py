@@ -110,8 +110,28 @@ def task_split(rng, n_draws, n_held, lo=1, hi=9, max_target=999):
     rng.shuffle(tasks)
     return tasks[n_held:], tasks[:n_held]
 
-# Step 6 - encode_task (not yet solved)
-# TODO: implement
+# Step 6 - encode_task
+VOCAB = ["<pad>", "<bos>", "=", "<eos>"] + [str(d) for d in range(10)] + OPS
+TOK = {t: i for i, t in enumerate(VOCAB)}
+PAD, BOS, SEP, EOS = 0, 1, 2, 3
+PROMPT_LEN, COMP_LEN = 8, 6
+
+
+def encode_task(nums, target):
+    # TODO: [BOS, n1, n2, n3, SEP, t_hundreds, t_tens, t_ones]
+    ids = [BOS] + [TOK[str(n)] for n in nums] + [SEP] + [TOK[d] for d in f"{target:03d}"]
+    assert len(ids) == PROMPT_LEN
+    return ids
+
+def decode_completion(ids):
+    # TODO: token strings up to (not including) the first EOS
+    out = []
+    for i in ids:
+        i = int(i)
+        if i == EOS:
+            break
+        out.append(VOCAB[i])
+    return out
 
 # Step 7 - Policy (not yet solved)
 # TODO: implement
